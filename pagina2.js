@@ -176,3 +176,82 @@ document.addEventListener('DOMContentLoaded', () => {
   
     render();
   });
+// pagina2.js
+const addFriendBtn = document.getElementById("addFriendBtn");
+addFriendBtn.addEventListener("click", () => {
+    let name = document.getElementById("friendName").value;
+    let img = document.getElementById("friendImg").value || "images/logo.png";
+    let status = document.getElementById("friendStatus").value;
+
+    if (name.trim() !== "") {
+        let tbody = document.querySelector(".orders tbody");
+        let row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>
+                <img src="${img}">
+                <p>${name}</p>
+            </td>
+            <td>Agora</td>
+            <td><span class="status ${status === "Online" ? "completed" : "process"}">${status}</span></td>
+        `;
+
+        tbody.appendChild(row);
+
+        document.getElementById("friendName").value = "";
+        document.getElementById("friendImg").value = "";
+    }
+});
+function addRemoveButtons() {
+    document.querySelectorAll(".orders tbody tr").forEach(row => {
+        if (!row.querySelector(".remove-btn")) {
+            let td = document.createElement("td");
+            td.innerHTML = `<button class="remove-btn">Remover</button>`;
+            row.appendChild(td);
+
+            td.querySelector(".remove-btn").addEventListener("click", () => {
+                row.remove();
+            });
+        }
+    });
+}
+
+addRemoveButtons();
+setInterval(() => {
+    let rows = document.querySelectorAll(".orders tbody tr");
+    rows.forEach(row => {
+        let statusEl = row.querySelector(".status");
+        if (Math.random() > 0.5) {
+            statusEl.textContent = "Online";
+            statusEl.className = "status completed";
+            row.querySelector("td:nth-child(2)").textContent = "Agora";
+        } else {
+            statusEl.textContent = "Offline";
+            statusEl.className = "status process";
+            row.querySelector("td:nth-child(2)").textContent = "Há pouco";
+        }
+    });
+}, 5000);
+document.querySelectorAll(".orders tbody tr").forEach(row => {
+    row.addEventListener("click", () => {
+        let name = row.querySelector("p").textContent;
+        document.getElementById("chatFriendName").textContent = name;
+        document.getElementById("chatPopup").style.display = "block";
+    });
+});
+
+document.getElementById("closeChat").addEventListener("click", () => {
+    document.getElementById("chatPopup").style.display = "none";
+});
+
+document.getElementById("sendChat").addEventListener("click", () => {
+    let msgBox = document.getElementById("chatMessages");
+    let msg = document.getElementById("chatInput").value;
+    if (msg.trim() !== "") {
+        let p = document.createElement("p");
+        p.textContent = "Você: " + msg;
+        msgBox.appendChild(p);
+        document.getElementById("chatInput").value = "";
+    }
+});
+
