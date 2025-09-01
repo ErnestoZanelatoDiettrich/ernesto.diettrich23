@@ -690,3 +690,38 @@ body{
     cursor: pointer;
 }
 
+/* Botão padrão */
+button {
+    font-size: 14px;
+    padding: 6px 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Botão Adicionar */
+#addFriendBtn {
+    background: var(--primary);
+    color: white;
+}
+
+#addFriendBtn:hover {
+    background: #0056b3; /* tom mais escuro */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+/* Botão Remover */
+.remove-btn {
+    background: #ff4d4d;
+    color: white;
+}
+
+.remove-btn:hover {
+    background: #cc0000;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
