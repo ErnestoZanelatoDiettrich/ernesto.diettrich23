@@ -254,4 +254,49 @@ document.getElementById("sendChat").addEventListener("click", () => {
         document.getElementById("chatInput").value = "";
     }
 });
+// Seletores
+const addFriendBtn = document.getElementById("addFriendBtn");
+const friendName = document.getElementById("friendName");
+const friendImg = document.getElementById("friendImg");
+const friendStatus = document.getElementById("friendStatus");
+const friendsTable = document.getElementById("friendsTable");
+
+// Função para adicionar evento de remover
+function addRemoveEvent(button) {
+    button.addEventListener("click", () => {
+        button.closest("tr").remove();
+    });
+}
+
+// Ativar botões de remover já existentes
+document.querySelectorAll(".remove-btn").forEach(addRemoveEvent);
+
+// Adicionar novo amigo
+addFriendBtn.addEventListener("click", () => {
+    let name = friendName.value.trim();
+    let img = friendImg.value.trim() || "https://i.pravatar.cc/80";
+    let status = friendStatus.value;
+
+    if (name !== "") {
+        let row = document.createElement("tr");
+        row.innerHTML = `
+            <td>
+                <img src="${img}">
+                <p>${name}</p>
+            </td>
+            <td>Agora</td>
+            <td><span class="status ${status === "Online" ? "completed" : "process"}">${status}</span></td>
+            <td><button class="remove-btn">Remover</button></td>
+        `;
+        friendsTable.appendChild(row);
+
+        // Ativar botão remover no novo amigo
+        addRemoveEvent(row.querySelector(".remove-btn"));
+
+        // Limpar campos
+        friendName.value = "";
+        friendImg.value = "";
+    }
+});
+
 
