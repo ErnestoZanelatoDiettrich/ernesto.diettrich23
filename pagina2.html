@@ -131,6 +131,25 @@
                         </tbody>
                     </table>
                 </div>
+                <div class="add-friend">
+                    <h3>Adicionar Amigo</h3>
+                    <input type="text" id="friendName" placeholder="Nome">
+                    <input type="text" id="friendImg" placeholder="URL da imagem">
+                    <select id="friendStatus">
+                        <option value="Online">Online</option>
+                        <option value="Offline">Offline</option>
+                    </select>
+                    <button id="addFriendBtn">Adicionar</button>
+                </div>
+                <div id="chatPopup" class="chat-popup" style="display:none;">
+                <div class="chat-header">
+                    <span id="chatFriendName"></span>
+                    <button id="closeChat">X</button>
+                </div>
+                    <div id="chatMessages" class="chat-messages"></div>
+                    <input type="text" id="chatInput" placeholder="Digite uma mensagem...">
+                    <button id="sendChat">Enviar</button>
+                </div>
 
           
 
@@ -144,5 +163,6 @@
 
     <script src="pagina2.js"></script>
 </body>
+
 
 </html>
