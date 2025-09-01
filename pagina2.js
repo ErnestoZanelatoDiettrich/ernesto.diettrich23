@@ -203,18 +203,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const friendName = document.getElementById("friendName");
     const friendStatus = document.getElementById("friendStatus");
     const friendsTable = document.getElementById("friendsTable");
-
     const chatPopup = document.getElementById("chatPopup");
     const chatFriendName = document.getElementById("chatFriendName");
     const chatMessages = document.getElementById("chatMessages");
     const chatInput = document.getElementById("chatInput");
     const sendChat = document.getElementById("sendChat");
     const closeChat = document.getElementById("closeChat");
-
     let currentFriend = null;
     let chats = {}; // Armazena mensagens de cada amigo separado
-
-    // --- Função para criar linha de amigo ---
     function createFriendRow(name, status) {
         const row = document.createElement("tr");
         row.innerHTML = `
@@ -226,56 +222,39 @@ document.addEventListener("DOMContentLoaded", () => {
             <td><span class="status ${status === "Online" ? "completed" : "process"}">${status}</span></td>
             <td><button class="remove-btn">Remover</button></td>
         `;
-
-        // Clique no amigo abre chat
         row.querySelector("td").addEventListener("click", () => openChat(name));
-
-        // Clique no botão remove
         row.querySelector(".remove-btn").addEventListener("click", (e) => {
             e.stopPropagation();
             row.remove();
             delete chats[name]; // remove o histórico do amigo
             if (currentFriend === name) closeChatPopup();
         });
-
         return row;
     }
-
-    // --- Adicionar amigo ---
     addFriendBtn.addEventListener("click", () => {
         const name = friendName.value.trim();
         const status = friendStatus.value;
-
         if (!name) return;
-
-        // Evitar duplicados
         if (document.querySelector(`#friendsTable p:contains('${name}')`)) {
             alert("Esse amigo já foi adicionado!");
             return;
         }
-
         const row = createFriendRow(name, status);
         friendsTable.appendChild(row);
         chats[name] = []; // inicia histórico do amigo
         friendName.value = "";
     });
-
-    // --- Abrir chat ---
     function openChat(name) {
         currentFriend = name;
         chatFriendName.textContent = name;
         renderChat(name);
         chatPopup.style.display = "flex";
     }
-
-    // --- Fechar chat ---
     function closeChatPopup() {
         chatPopup.style.display = "none";
         currentFriend = null;
     }
     closeChat.addEventListener("click", closeChatPopup);
-
-    // --- Renderizar mensagens no chat ---
     function renderChat(friend) {
         chatMessages.innerHTML = "";
         (chats[friend] || []).forEach(msg => {
@@ -286,23 +265,19 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
-
-    // --- Enviar mensagem ---
     sendChat.addEventListener("click", () => {
         const msg = chatInput.value.trim();
         if (!msg || !currentFriend) return;
-
         chats[currentFriend].push({ sender: "me", text: msg });
         renderChat(currentFriend);
         chatInput.value = "";
-
-        // Simulação de resposta automática
         setTimeout(() => {
             chats[currentFriend].push({ sender: "friend", text: "kkk boa!" });
             renderChat(currentFriend);
         }, 1000);
     });
 });
+
 
 
 
