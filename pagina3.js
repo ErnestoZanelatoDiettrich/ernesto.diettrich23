@@ -177,52 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
     render();
     console.log();
   });
-document.addEventListener("DOMContentLoaded", () => {
-    const storeFeed = document.getElementById("storeFeed");
-    const loading = document.getElementById("loading");
-
-    // Produtos "base"
-    const products = [
-        { name: "Fone Bluetooth", price: 199.90 },
-        { name: "Teclado Mecânico", price: 349.90 },
-        { name: "Mouse Gamer", price: 159.90 },
-        { name: "Smartwatch", price: 499.90 },
-        { name: "Cadeira Gamer", price: 999.90 },
-        { name: "Monitor 27''", price: 1299.90 },
-        { name: "HD Externo 1TB", price: 399.90 },
-        { name: "Placa de Vídeo RTX", price: 2999.90 },
-    ];
-
-    // Gerar produtos aleatórios
-    function loadProducts(count = 6) {
-        for (let i = 0; i < count; i++) {
-            const random = products[Math.floor(Math.random() * products.length)];
-            const card = document.createElement("div");
-            card.className = "product-card";
-            card.innerHTML = `
-                <img src="https://picsum.photos/300?random=${Math.floor(Math.random()*1000)}">
-                <h3>${random.name}</h3>
-                <p>R$ ${random.price.toFixed(2).replace(".", ",")}</p>
-                <button class="add-to-cart">Adicionar ao Carrinho</button>
-            `;
-            storeFeed.appendChild(card);
-        }
-    }
-
-    // --- Scroll Infinito ---
-    let loadingProducts = false;
-    window.addEventListener("scroll", () => {
-        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100 && !loadingProducts) {
-            loadingProducts = true;
-            loading.style.display = "block";
-            setTimeout(() => {
-                loadProducts(6);
-                loading.style.display = "none";
-                loadingProducts = false;
-            }, 1000);
-        }
-    });
-
     loadProducts(9); // Primeiros produtos
     const cartBtn = document.getElementById("cartBtn");
     const cartSidebar = document.getElementById("cartSidebar");
@@ -285,6 +239,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
     renderCart();
 });
+document.addEventListener("DOMContentLoaded", () => {
+    const productFeed = document.getElementById("productFeed");
+    const products = [
+        { name: "Camiseta Preta", price: 49.90, img: "https://picsum.photos/220/180?random=1" },
+        { name: "Tênis Esportivo", price: 199.90, img: "https://picsum.photos/220/180?random=2" },
+        { name: "Relógio Digital", price: 99.90, img: "https://picsum.photos/220/180?random=3" },
+        { name: "Fone de Ouvido", price: 149.90, img: "https://picsum.photos/220/180?random=4" },
+        { name: "Jaqueta Jeans", price: 249.90, img: "https://picsum.photos/220/180?random=5" },
+        { name: "Mochila", price: 89.90, img: "https://picsum.photos/220/180?random=6" },
+        { name: "Óculos de Sol", price: 79.90, img: "https://picsum.photos/220/180?random=7" },
+        { name: "Boné", price: 39.90, img: "https://picsum.photos/220/180?random=8" },
+        { name: "Smartphone", price: 1599.90, img: "https://picsum.photos/220/180?random=9" },
+        { name: "Notebook", price: 3599.90, img: "https://picsum.photos/220/180?random=10" }
+    ];
+    function loadProducts(qtd = 5) {
+        for (let i = 0; i < qtd; i++) {
+            const product = products[Math.floor(Math.random() * products.length)];
+            const card = document.createElement("div");
+            card.classList.add("product-card");
+            card.innerHTML = `
+                <img src="${product.img}" alt="${product.name}">
+                <h3>${product.name}</h3>
+                <p class="price">R$ ${product.price.toFixed(2)}</p>
+                <button>Adicionar ao Carrinho</button>
+            `;
+            productFeed.appendChild(card);
+        }
+    }
+    loadProducts(10);
+    window.addEventListener("scroll", () => {
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
+            loadProducts(5);
+        }
+    });
+});
+
 
 
 
