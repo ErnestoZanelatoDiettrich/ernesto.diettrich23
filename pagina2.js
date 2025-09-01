@@ -99,9 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let tasks = JSON.parse(localStorage.getItem(STORAGE_KEY));
     if (!Array.isArray(tasks)) {
       tasks = [
-        { text: 'Reunião', completed: true },
-        { text: 'Encontro com o ditador', completed: true },
-        { text: 'Jogar brawl stars', completed: false }
       ];
       save();
     }
@@ -176,7 +173,6 @@ document.addEventListener('DOMContentLoaded', () => {
   
     render();
   });
-// pagina2.js
 const addFriendBtn = document.getElementById("addFriendBtn");
 addFriendBtn.addEventListener("click", () => {
     let name = document.getElementById("friendName").value;
@@ -254,17 +250,13 @@ document.getElementById("sendChat").addEventListener("click", () => {
         document.getElementById("chatInput").value = "";
     }
 });
-// Seletores do chat
 const chatPopup = document.getElementById("chatPopup");
 const chatFriendName = document.getElementById("chatFriendName");
 const chatMessages = document.getElementById("chatMessages");
 const chatInput = document.getElementById("chatInput");
 const sendChat = document.getElementById("sendChat");
 const closeChat = document.getElementById("closeChat");
-
 let currentFriend = "";
-
-// Função para abrir chat de um amigo
 function attachChatEvent(row) {
     row.addEventListener("click", () => {
         currentFriend = row.querySelector("p").textContent;
@@ -273,13 +265,9 @@ function attachChatEvent(row) {
         chatPopup.style.display = "flex";
     });
 }
-
-// Fechar chat
 closeChat.addEventListener("click", () => {
     chatPopup.style.display = "none";
 });
-
-// Enviar mensagem
 sendChat.addEventListener("click", () => {
     let msg = chatInput.value.trim();
     if (msg !== "") {
@@ -300,16 +288,11 @@ sendChat.addEventListener("click", () => {
         }, 1000);
     }
 });
-
-// Ativar chat para amigos existentes
 document.querySelectorAll("#friendsTable tr").forEach(attachChatEvent);
-
-// ⚡ Integração com "Adicionar amigo"
 addFriendBtn.addEventListener("click", () => {
     let name = friendName.value.trim();
     let img = friendImg.value.trim() || "https://i.pravatar.cc/80";
     let status = friendStatus.value;
-
     if (name !== "") {
         let row = document.createElement("tr");
         row.innerHTML = `
@@ -322,17 +305,13 @@ addFriendBtn.addEventListener("click", () => {
             <td><button class="remove-btn">Remover</button></td>
         `;
         friendsTable.appendChild(row);
-
-        // Botão remover
         addRemoveEvent(row.querySelector(".remove-btn"));
-        // Chat
         attachChatEvent(row);
-
-        // Limpar campos
         friendName.value = "";
         friendImg.value = "";
     }
 });
+
 
 
 
