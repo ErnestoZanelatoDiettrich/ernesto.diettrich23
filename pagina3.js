@@ -222,6 +222,75 @@ document.addEventListener("DOMContentLoaded", () => {
 
     loadProducts(9);
 });
+document.addEventListener("DOMContentLoaded", () => {
+    const cartBtn = document.getElementById("cartBtn");
+    const cartSidebar = document.getElementById("cartSidebar");
+    const closeCart = document.getElementById("closeCart");
+    const clearCart = document.getElementById("clearCart");
+    const cartItems = document.getElementById("cartItems");
+    const cartCount = document.getElementById("cartCount");
+    const cartTotal = document.getElementById("cartTotal");
+
+    const STORAGE_KEY = "asmr_cart_v1";
+    let cart = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+
+    function saveCart() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
+    }
+
+    function renderCart() {
+        cartItems.innerHTML = "";
+        let total = 0;
+        cart.forEach((item, index) => {
+            total += item.price;
+            const li = document.createElement("li");
+            li.innerHTML = `
+                <span>${item.name} - R$ ${item.price.toFixed(2)}</span>
+                <button data-index="${index}">X</button>
+            `;
+            cartItems.appendChild(li);
+        });
+        cartTotal.textContent = "Total: R$ " + total.toFixed(2).replace(".", ",");
+        cartCount.textContent = cart.length;
+
+        cartItems.querySelectorAll("button").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const idx = btn.dataset.index;
+                cart.splice(idx, 1);
+                saveCart();
+                renderCart();
+            });
+        });
+    }
+
+    document.body.addEventListener("click", (e) => {
+        if (e.target.tagName === "BUTTON" && e.target.textContent.includes("Carrinho")) {
+            const card = e.target.closest(".product-card");
+            const name = card.querySelector("h3").textContent;
+            const price = parseFloat(card.querySelector("p").textContent.replace("R$", "").replace(",", "."));
+            cart.push({ name, price });
+            saveCart();
+            renderCart();
+        }
+    });
+
+    // Abrir/fechar carrinho
+    cartBtn.addEventListener("click", () => {
+        cartSidebar.classList.add("open");
+    });
+    closeCart.addEventListener("click", () => {
+        cartSidebar.classList.remove("open");
+    });
+
+    clearCart.addEventListener("click", () => {
+        cart = [];
+        saveCart();
+        renderCart();
+    });
+
+    renderCart();
+});
+
 
 
 
