@@ -177,3 +177,52 @@ document.addEventListener('DOMContentLoaded', () => {
     render();
     console.log();
   });
+document.addEventListener("DOMContentLoaded", () => {
+    const storeFeed = document.getElementById("storeFeed");
+    const loading = document.getElementById("loading");
+
+    const products = [
+        { name: "Fone Bluetooth", price: "R$ 199,90", img: "https://picsum.photos/200?random=1" },
+        { name: "Teclado Mecânico", price: "R$ 349,90", img: "https://picsum.photos/200?random=2" },
+        { name: "Mouse Gamer", price: "R$ 159,90", img: "https://picsum.photos/200?random=3" },
+        { name: "Smartwatch", price: "R$ 499,90", img: "https://picsum.photos/200?random=4" },
+        { name: "Cadeira Gamer", price: "R$ 999,90", img: "https://picsum.photos/200?random=5" },
+        { name: "Monitor 27''", price: "R$ 1.299,90", img: "https://picsum.photos/200?random=6" },
+        { name: "HD Externo 1TB", price: "R$ 399,90", img: "https://picsum.photos/200?random=7" },
+        { name: "Placa de Vídeo RTX", price: "R$ 2.999,90", img: "https://picsum.photos/200?random=8" },
+    ];
+
+    function loadProducts(count = 6) {
+        for (let i = 0; i < count; i++) {
+            const random = products[Math.floor(Math.random() * products.length)];
+            const card = document.createElement("div");
+            card.className = "product-card";
+            card.innerHTML = `
+                <img src="https://picsum.photos/300?random=${Math.floor(Math.random()*1000)}">
+                <h3>${random.name}</h3>
+                <p>${random.price}</p>
+                <button>Adicionar ao Carrinho</button>
+            `;
+            storeFeed.appendChild(card);
+        }
+    }
+
+    // --- Scroll Infinito ---
+    let loadingProducts = false;
+    window.addEventListener("scroll", () => {
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100 && !loadingProducts) {
+            loadingProducts = true;
+            loading.style.display = "block";
+            setTimeout(() => {
+                loadProducts(6);
+                loading.style.display = "none";
+                loadingProducts = false;
+            }, 1000);
+        }
+    });
+
+    // Carregar primeiros produtos
+    loadProducts(9);
+});
+
+
