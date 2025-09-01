@@ -181,17 +181,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const storeFeed = document.getElementById("storeFeed");
     const loading = document.getElementById("loading");
 
+    // Produtos "base"
     const products = [
-        { name: "Fone Bluetooth", price: "R$ 199,90", img: "https://picsum.photos/200?random=1" },
-        { name: "Teclado Mecânico", price: "R$ 349,90", img: "https://picsum.photos/200?random=2" },
-        { name: "Mouse Gamer", price: "R$ 159,90", img: "https://picsum.photos/200?random=3" },
-        { name: "Smartwatch", price: "R$ 499,90", img: "https://picsum.photos/200?random=4" },
-        { name: "Cadeira Gamer", price: "R$ 999,90", img: "https://picsum.photos/200?random=5" },
-        { name: "Monitor 27''", price: "R$ 1.299,90", img: "https://picsum.photos/200?random=6" },
-        { name: "HD Externo 1TB", price: "R$ 399,90", img: "https://picsum.photos/200?random=7" },
-        { name: "Placa de Vídeo RTX", price: "R$ 2.999,90", img: "https://picsum.photos/200?random=8" },
+        { name: "Fone Bluetooth", price: 199.90 },
+        { name: "Teclado Mecânico", price: 349.90 },
+        { name: "Mouse Gamer", price: 159.90 },
+        { name: "Smartwatch", price: 499.90 },
+        { name: "Cadeira Gamer", price: 999.90 },
+        { name: "Monitor 27''", price: 1299.90 },
+        { name: "HD Externo 1TB", price: 399.90 },
+        { name: "Placa de Vídeo RTX", price: 2999.90 },
     ];
 
+    // Gerar produtos aleatórios
     function loadProducts(count = 6) {
         for (let i = 0; i < count; i++) {
             const random = products[Math.floor(Math.random() * products.length)];
@@ -200,13 +202,14 @@ document.addEventListener("DOMContentLoaded", () => {
             card.innerHTML = `
                 <img src="https://picsum.photos/300?random=${Math.floor(Math.random()*1000)}">
                 <h3>${random.name}</h3>
-                <p>${random.price}</p>
-                <button>Adicionar ao Carrinho</button>
+                <p>R$ ${random.price.toFixed(2).replace(".", ",")}</p>
+                <button class="add-to-cart">Adicionar ao Carrinho</button>
             `;
             storeFeed.appendChild(card);
         }
     }
 
+    // --- Scroll Infinito ---
     let loadingProducts = false;
     window.addEventListener("scroll", () => {
         if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100 && !loadingProducts) {
@@ -220,9 +223,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    loadProducts(9);
-});
-document.addEventListener("DOMContentLoaded", () => {
+    loadProducts(9); // Primeiros produtos
     const cartBtn = document.getElementById("cartBtn");
     const cartSidebar = document.getElementById("cartSidebar");
     const closeCart = document.getElementById("closeCart");
@@ -245,7 +246,7 @@ document.addEventListener("DOMContentLoaded", () => {
             total += item.price;
             const li = document.createElement("li");
             li.innerHTML = `
-                <span>${item.name} - R$ ${item.price.toFixed(2)}</span>
+                <span>${item.name} - R$ ${item.price.toFixed(2).replace(".", ",")}</span>
                 <button data-index="${index}">X</button>
             `;
             cartItems.appendChild(li);
@@ -264,7 +265,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     document.body.addEventListener("click", (e) => {
-        if (e.target.tagName === "BUTTON" && e.target.textContent.includes("Carrinho")) {
+        if (e.target.classList.contains("add-to-cart")) {
             const card = e.target.closest(".product-card");
             const name = card.querySelector("h3").textContent;
             const price = parseFloat(card.querySelector("p").textContent.replace("R$", "").replace(",", "."));
@@ -274,14 +275,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Abrir/fechar carrinho
-    cartBtn.addEventListener("click", () => {
-        cartSidebar.classList.add("open");
-    });
-    closeCart.addEventListener("click", () => {
-        cartSidebar.classList.remove("open");
-    });
-
+    cartBtn.addEventListener("click", () => cartSidebar.classList.add("open"));
+    closeCart.addEventListener("click", () => cartSidebar.classList.remove("open"));
     clearCart.addEventListener("click", () => {
         cart = [];
         saveCart();
