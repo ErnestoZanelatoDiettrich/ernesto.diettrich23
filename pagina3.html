@@ -1,1 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="style.css">
+    <title>Responsive Dashboard Design #2 | AsmrProg</title>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <a href="#" class="logo">
+            <i class='bx bx-code-alt'></i>
+            <div class="logo-name"><span>Daily</span>Wave</div>
+        </a>
+        <ul class="side-menu">
+            <li><a href="pagina4.html"><i class='bx bxs-dashboard'></i>Painel principal</a></li>
+            <li><a href="pagina3.html"><i class='bx bx-store-alt'></i>Loja</a></li>
+            <li class="active"><a href="#"><i class='bx bx-analyse'></i>Estatísticas</a></li>
+            <li><a href="pagina.html"><i class='bx bx-message-square-dots'></i>Tickets</a></li>
+            <li><a href="pagina2.html"><i class='bx bx-group'></i>Amigos</a></li>
+            <li><a href="#"><i class='bx bx-cog'></i>Configurações</a></li>
+        </ul>
+        <ul class="side-menu">
+            <li>
+                <a href="#" class="logout">
+                    <i class='bx bx-log-out-circle'></i>
+                    Desconectar
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!-- End of Sidebar -->
+
+    <!-- Main Content -->
+    <div class="content">
+        <!-- Navbar -->
+        <nav>
+            <i class='bx bx-menu'></i>
+            <form action="#">
+                <div class="form-input">
+                        <div class="form-input">
+                            <input type="search" id="searchInput" placeholder="Search...">
+                            <button class="search-btn" type="button"><i class='bx bx-search'></i></button>
+                        </div>
+                    </form>
+                </div>
+            </form>
+            <input type="checkbox" id="theme-toggle" hidden>
+            <label for="theme-toggle" class="theme-toggle"></label>
+            <a href="#" class="notif">
+                <i class='bx bx-bell'></i>
+                <span class="count">12</span>
+            </a>
+            <a href="#" class="profile">
+                <img src="images/logo.png">
+            </a>
+        </nav>
+
+        <!-- End of Navbar -->
+
+        <main>
+            <div class="header">
+                <div class="left">
+                    <h1>Estatísticas</h1>
+                    <ul class="breadcrumb">
+                        <li><a href="#">
+                                Analytics
+                            </a></li>
+                        /
+                        <li><a href="#" class="active">Shop</a></li>
+                    </ul>
+                </div>
+                <a href="#" class="report">
+                    <i class='bx bx-cloud-download'></i>
+                    <span>Download CSV</span>
+                </a>
+            </div>
+        </main>
+  
+</body>
+</html>
