@@ -254,24 +254,57 @@ document.getElementById("sendChat").addEventListener("click", () => {
         document.getElementById("chatInput").value = "";
     }
 });
-// Seletores
-const addFriendBtn = document.getElementById("addFriendBtn");
-const friendName = document.getElementById("friendName");
-const friendImg = document.getElementById("friendImg");
-const friendStatus = document.getElementById("friendStatus");
-const friendsTable = document.getElementById("friendsTable");
+// Seletores do chat
+const chatPopup = document.getElementById("chatPopup");
+const chatFriendName = document.getElementById("chatFriendName");
+const chatMessages = document.getElementById("chatMessages");
+const chatInput = document.getElementById("chatInput");
+const sendChat = document.getElementById("sendChat");
+const closeChat = document.getElementById("closeChat");
 
-// Função para adicionar evento de remover
-function addRemoveEvent(button) {
-    button.addEventListener("click", () => {
-        button.closest("tr").remove();
+let currentFriend = "";
+
+// Função para abrir chat de um amigo
+function attachChatEvent(row) {
+    row.addEventListener("click", () => {
+        currentFriend = row.querySelector("p").textContent;
+        chatFriendName.textContent = currentFriend;
+        chatMessages.innerHTML = ""; // limpa histórico
+        chatPopup.style.display = "flex";
     });
 }
 
-// Ativar botões de remover já existentes
-document.querySelectorAll(".remove-btn").forEach(addRemoveEvent);
+// Fechar chat
+closeChat.addEventListener("click", () => {
+    chatPopup.style.display = "none";
+});
 
-// Adicionar novo amigo
+// Enviar mensagem
+sendChat.addEventListener("click", () => {
+    let msg = chatInput.value.trim();
+    if (msg !== "") {
+        let p = document.createElement("p");
+        p.classList.add("me");
+        p.textContent = "Você: " + msg;
+        chatMessages.appendChild(p);
+        chatInput.value = "";
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        // Simulação de resposta do amigo
+        setTimeout(() => {
+            let reply = document.createElement("p");
+            reply.classList.add("friend");
+            reply.textContent = currentFriend + ": haha boa!";
+            chatMessages.appendChild(reply);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }, 1000);
+    }
+});
+
+// Ativar chat para amigos existentes
+document.querySelectorAll("#friendsTable tr").forEach(attachChatEvent);
+
+// ⚡ Integração com "Adicionar amigo"
 addFriendBtn.addEventListener("click", () => {
     let name = friendName.value.trim();
     let img = friendImg.value.trim() || "https://i.pravatar.cc/80";
@@ -290,13 +323,16 @@ addFriendBtn.addEventListener("click", () => {
         `;
         friendsTable.appendChild(row);
 
-        // Ativar botão remover no novo amigo
+        // Botão remover
         addRemoveEvent(row.querySelector(".remove-btn"));
+        // Chat
+        attachChatEvent(row);
 
         // Limpar campos
         friendName.value = "";
         friendImg.value = "";
     }
 });
+
 
 
