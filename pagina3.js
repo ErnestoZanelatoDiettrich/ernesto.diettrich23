@@ -178,7 +178,9 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log();
   });
 document.addEventListener("DOMContentLoaded", () => {
-    const storeFeed = document.getElementById("storeFeed");
+    const storeFeed = document.getElementById("storeFeed"); 
+    if (!storeFeed) return; // se não existir, não tenta rodar loja
+
     const loading = document.getElementById("loading");
 
     // Produtos "base"
@@ -193,7 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "Placa de Vídeo RTX", price: 2999.90 },
     ];
 
-    // Gerar produtos aleatórios
+    // Função para gerar produtos
     function loadProducts(count = 6) {
         for (let i = 0; i < count; i++) {
             const random = products[Math.floor(Math.random() * products.length)];
@@ -214,16 +216,18 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener("scroll", () => {
         if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100 && !loadingProducts) {
             loadingProducts = true;
-            loading.style.display = "block";
+            if (loading) loading.style.display = "block";
             setTimeout(() => {
                 loadProducts(6);
-                loading.style.display = "none";
+                if (loading) loading.style.display = "none";
                 loadingProducts = false;
             }, 1000);
         }
     });
 
     loadProducts(9);
+
+    // --- Carrinho ---
     const cartBtn = document.getElementById("cartBtn");
     const cartSidebar = document.getElementById("cartSidebar");
     const closeCart = document.getElementById("closeCart");
@@ -240,6 +244,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function renderCart() {
+        if (!cartItems || !cartTotal || !cartCount) return;
         cartItems.innerHTML = "";
         let total = 0;
         cart.forEach((item, index) => {
@@ -275,13 +280,19 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    cartBtn.addEventListener("click", () => cartSidebar.classList.add("open"));
-    closeCart.addEventListener("click", () => cartSidebar.classList.remove("open"));
-    clearCart.addEventListener("click", () => {
-        cart = [];
-        saveCart();
-        renderCart();
-    });
+    if (cartBtn && cartSidebar) {
+        cartBtn.addEventListener("click", () => cartSidebar.classList.add("open"));
+    }
+    if (closeCart && cartSidebar) {
+        closeCart.addEventListener("click", () => cartSidebar.classList.remove("open"));
+    }
+    if (clearCart) {
+        clearCart.addEventListener("click", () => {
+            cart = [];
+            saveCart();
+            renderCart();
+        });
+    }
 
     renderCart();
 });
