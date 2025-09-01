@@ -207,19 +207,14 @@ const friendsTable = document.getElementById("friendsTable");
 // Função para remover amigos
 function addRemoveEvent(button) {
     button.addEventListener("click", (e) => {
-        e.stopPropagation(); // impede de abrir o chat ao clicar no botão
+        e.stopPropagation(); 
         button.closest("tr").remove();
     });
 }
-
-// Ativar botões de remover já existentes
 document.querySelectorAll(".remove-btn").forEach(addRemoveEvent);
-
-// Adicionar novo amigo
 addFriendBtn.addEventListener("click", () => {
     let name = friendName.value.trim();
     let status = friendStatus.value;
-
     if (name !== "") {
         let row = document.createElement("tr");
         row.innerHTML = `
@@ -232,17 +227,11 @@ addFriendBtn.addEventListener("click", () => {
             <td><button class="remove-btn">Remover</button></td>
         `;
         friendsTable.appendChild(row);
-
-        // Botão remover no novo amigo
         addRemoveEvent(row.querySelector(".remove-btn"));
-        // Evento de abrir chat no novo amigo
         attachChatEvent(row);
-
-        // Limpar campos
         friendName.value = "";
     }
 });
-
 setInterval(() => {
     let rows = document.querySelectorAll(".orders tbody tr");
     rows.forEach(row => {
@@ -265,11 +254,9 @@ document.querySelectorAll(".orders tbody tr").forEach(row => {
         document.getElementById("chatPopup").style.display = "block";
     });
 });
-
 document.getElementById("closeChat").addEventListener("click", () => {
     document.getElementById("chatPopup").style.display = "none";
 });
-
 document.getElementById("sendChat").addEventListener("click", () => {
     let msgBox = document.getElementById("chatMessages");
     let msg = document.getElementById("chatInput").value;
@@ -341,6 +328,7 @@ addFriendBtn.addEventListener("click", () => {
         friendImg.value = "";
     }
 });
+
 
 
 
