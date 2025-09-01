@@ -690,7 +690,6 @@ body{
     cursor: pointer;
 }
 
-/* Botão padrão */
 button {
     font-size: 14px;
     padding: 6px 14px;
@@ -701,7 +700,6 @@ button {
     transition: all 0.2s ease-in-out;
 }
 
-/* Botão Adicionar */
 #addFriendBtn {
     background: var(--primary);
     color: white;
@@ -713,7 +711,6 @@ button {
     box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
-/* Botão Remover */
 .remove-btn {
     background: #ff4d4d;
     color: white;
@@ -724,4 +721,5 @@ button {
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
+
 
