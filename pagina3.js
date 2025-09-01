@@ -177,7 +177,53 @@ document.addEventListener('DOMContentLoaded', () => {
     render();
     console.log();
   });
-    loadProducts(9); // Primeiros produtos
+document.addEventListener("DOMContentLoaded", () => {
+    const storeFeed = document.getElementById("storeFeed");
+    const loading = document.getElementById("loading");
+
+    // Produtos "base"
+    const products = [
+        { name: "Fone Bluetooth", price: 199.90 },
+        { name: "Teclado Mecânico", price: 349.90 },
+        { name: "Mouse Gamer", price: 159.90 },
+        { name: "Smartwatch", price: 499.90 },
+        { name: "Cadeira Gamer", price: 999.90 },
+        { name: "Monitor 27''", price: 1299.90 },
+        { name: "HD Externo 1TB", price: 399.90 },
+        { name: "Placa de Vídeo RTX", price: 2999.90 },
+    ];
+
+    // Gerar produtos aleatórios
+    function loadProducts(count = 6) {
+        for (let i = 0; i < count; i++) {
+            const random = products[Math.floor(Math.random() * products.length)];
+            const card = document.createElement("div");
+            card.className = "product-card";
+            card.innerHTML = `
+                <img src="https://picsum.photos/300?random=${Math.floor(Math.random()*1000)}">
+                <h3>${random.name}</h3>
+                <p>R$ ${random.price.toFixed(2).replace(".", ",")}</p>
+                <button class="add-to-cart">Adicionar ao Carrinho</button>
+            `;
+            storeFeed.appendChild(card);
+        }
+    }
+
+    // --- Scroll Infinito ---
+    let loadingProducts = false;
+    window.addEventListener("scroll", () => {
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100 && !loadingProducts) {
+            loadingProducts = true;
+            loading.style.display = "block";
+            setTimeout(() => {
+                loadProducts(6);
+                loading.style.display = "none";
+                loadingProducts = false;
+            }, 1000);
+        }
+    });
+
+    loadProducts(9);
     const cartBtn = document.getElementById("cartBtn");
     const cartSidebar = document.getElementById("cartSidebar");
     const closeCart = document.getElementById("closeCart");
