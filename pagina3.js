@@ -179,9 +179,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 document.addEventListener("DOMContentLoaded", () => {
     const storeFeed = document.getElementById("storeFeed"); 
-    if (!storeFeed) return; // se não existir, não tenta rodar loja
+    if (!storeFeed) return;
 
-    // Produtos "base"
     const products = [
         { name: "Fone Bluetooth", price: 199.90 },
         { name: "Teclado Mecânico", price: 349.90 },
@@ -193,7 +192,6 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "Placa de Vídeo RTX", price: 2999.90 },
     ];
 
-    // Função para gerar produtos
     function loadProducts(count = 6) {
         for (let i = 0; i < count; i++) {
             const random = products[Math.floor(Math.random() * products.length)];
@@ -209,7 +207,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // --- Scroll Infinito sem loading ---
     let loadingProducts = false;
     window.addEventListener("scroll", () => {
         if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100 && !loadingProducts) {
@@ -274,22 +271,17 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    if (cartBtn && cartSidebar) {
-        cartBtn.addEventListener("click", () => cartSidebar.classList.add("open"));
-    }
-    if (closeCart && cartSidebar) {
-        closeCart.addEventListener("click", () => cartSidebar.classList.remove("open"));
-    }
-    if (clearCart) {
-        clearCart.addEventListener("click", () => {
-            cart = [];
-            saveCart();
-            renderCart();
-        });
-    }
+    if (cartBtn && cartSidebar) cartBtn.addEventListener("click", () => cartSidebar.classList.add("open"));
+    if (closeCart && cartSidebar) closeCart.addEventListener("click", () => cartSidebar.classList.remove("open"));
+    if (clearCart) clearCart.addEventListener("click", () => {
+        cart = [];
+        saveCart();
+        renderCart();
+    });
 
     renderCart();
 });
+
 
 
 
