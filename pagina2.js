@@ -198,21 +198,51 @@ addFriendBtn.addEventListener("click", () => {
         document.getElementById("friendImg").value = "";
     }
 });
-function addRemoveButtons() {
-    document.querySelectorAll(".orders tbody tr").forEach(row => {
-        if (!row.querySelector(".remove-btn")) {
-            let td = document.createElement("td");
-            td.innerHTML = `<button class="remove-btn">Remover</button>`;
-            row.appendChild(td);
+// Seletores
+const addFriendBtn = document.getElementById("addFriendBtn");
+const friendName = document.getElementById("friendName");
+const friendStatus = document.getElementById("friendStatus");
+const friendsTable = document.getElementById("friendsTable");
 
-            td.querySelector(".remove-btn").addEventListener("click", () => {
-                row.remove();
-            });
-        }
+// Função para remover amigos
+function addRemoveEvent(button) {
+    button.addEventListener("click", (e) => {
+        e.stopPropagation(); // impede de abrir o chat ao clicar no botão
+        button.closest("tr").remove();
     });
 }
 
-addRemoveButtons();
+// Ativar botões de remover já existentes
+document.querySelectorAll(".remove-btn").forEach(addRemoveEvent);
+
+// Adicionar novo amigo
+addFriendBtn.addEventListener("click", () => {
+    let name = friendName.value.trim();
+    let status = friendStatus.value;
+
+    if (name !== "") {
+        let row = document.createElement("tr");
+        row.innerHTML = `
+            <td>
+                <img src="https://ppgquimica.propg.ufabc.edu.br/wp-content/uploads/2016/05/sem-imagem-avatar.png">
+                <p>${name}</p>
+            </td>
+            <td>Agora</td>
+            <td><span class="status ${status === "Online" ? "completed" : "process"}">${status}</span></td>
+            <td><button class="remove-btn">Remover</button></td>
+        `;
+        friendsTable.appendChild(row);
+
+        // Botão remover no novo amigo
+        addRemoveEvent(row.querySelector(".remove-btn"));
+        // Evento de abrir chat no novo amigo
+        attachChatEvent(row);
+
+        // Limpar campos
+        friendName.value = "";
+    }
+});
+
 setInterval(() => {
     let rows = document.querySelectorAll(".orders tbody tr");
     rows.forEach(row => {
@@ -261,7 +291,7 @@ function attachChatEvent(row) {
     row.addEventListener("click", () => {
         currentFriend = row.querySelector("p").textContent;
         chatFriendName.textContent = currentFriend;
-        chatMessages.innerHTML = ""; // limpa histórico
+        chatMessages.innerHTML = "";
         chatPopup.style.display = "flex";
     });
 }
@@ -311,6 +341,7 @@ addFriendBtn.addEventListener("click", () => {
         friendImg.value = "";
     }
 });
+
 
 
 
