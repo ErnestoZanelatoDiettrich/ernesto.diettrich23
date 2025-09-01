@@ -207,7 +207,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // --- Scroll Infinito ---
     let loadingProducts = false;
     window.addEventListener("scroll", () => {
         if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100 && !loadingProducts) {
@@ -221,8 +220,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Carregar primeiros produtos
     loadProducts(9);
 });
+
 
 
