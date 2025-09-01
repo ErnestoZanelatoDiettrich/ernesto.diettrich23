@@ -180,10 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener("DOMContentLoaded", () => {
     const storeFeed = document.getElementById("storeFeed"); 
     if (!storeFeed) return; // se não existir, não tenta rodar loja
-
     const loading = document.getElementById("loading");
-
-    // Produtos "base"
     const products = [
         { name: "Fone Bluetooth", price: 199.90 },
         { name: "Teclado Mecânico", price: 349.90 },
@@ -194,8 +191,6 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "HD Externo 1TB", price: 399.90 },
         { name: "Placa de Vídeo RTX", price: 2999.90 },
     ];
-
-    // Função para gerar produtos
     function loadProducts(count = 6) {
         for (let i = 0; i < count; i++) {
             const random = products[Math.floor(Math.random() * products.length)];
@@ -210,8 +205,6 @@ document.addEventListener("DOMContentLoaded", () => {
             storeFeed.appendChild(card);
         }
     }
-
-    // --- Scroll Infinito ---
     let loadingProducts = false;
     window.addEventListener("scroll", () => {
         if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100 && !loadingProducts) {
@@ -224,10 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }, 1000);
         }
     });
-
     loadProducts(9);
-
-    // --- Carrinho ---
     const cartBtn = document.getElementById("cartBtn");
     const cartSidebar = document.getElementById("cartSidebar");
     const closeCart = document.getElementById("closeCart");
@@ -296,6 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     renderCart();
 });
+
 
 
 
