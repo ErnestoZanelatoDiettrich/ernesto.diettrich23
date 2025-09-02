@@ -618,7 +618,69 @@ body{
     .content main .bottom-data .reminders .task-list{
         min-width: 340px;
     }
+/* Tabela amigos */
+.friends-table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+}
 
+.friends-table-container th, td {
+    padding: 12px;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: left;
+}
+
+.friends-table-container img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+.status {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+.status.completed {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status.process {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.add-friend-container {
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.add-friend-container input, 
+.add-friend-container select {
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #d1d5db;
+}
+
+.add-friend-container button {
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+}
 .chat-popup {
     position: fixed;
     bottom: 20px;
@@ -721,5 +783,6 @@ button {
     transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
+
 
 
