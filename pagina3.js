@@ -215,10 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
             loadingProducts = false;
         }
     });
-
     loadProducts(9);
-
-    // --- Carrinho ---
     const cartBtn = document.getElementById("cartBtn");
     const cartSidebar = document.getElementById("cartSidebar");
     const closeCart = document.getElementById("closeCart");
@@ -281,6 +278,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     renderCart();
 });
+
 
 
 
