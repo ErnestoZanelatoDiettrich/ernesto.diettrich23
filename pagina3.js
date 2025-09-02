@@ -61,166 +61,233 @@ if (toggler) {
         }
     });
 }
+ // Elementos do DOM
+        const cardContainer = document.getElementById("card-container");
+        const cardCountElem = document.getElementById("card-count");
+        const cardTotalElem = document.getElementById("card-total");
+        const loader = document.getElementById("loader");
+        const cartButton = document.getElementById("cart-button");
+        const cartModal = document.getElementById("cart-modal");
+        const overlay = document.getElementById("overlay");
+        const closeCart = document.querySelector(".close-cart");
+        const cartItems = document.getElementById("cart-items");
+        const cartCount = document.getElementById("cart-count");
+        const cartTotalPrice = document.getElementById("cart-total-price");
 
-// FUNÇÃO PRINCIPAL DA LOJA
-function initStore() {
-    const storeFeed = document.getElementById("storeFeed"); 
-    if (!storeFeed) {
-        console.error("Elemento storeFeed não encontrado!");
-        return;
-    }
+        // Configurações de paginação
+        const cardLimit = 99;
+        const cardIncrease = 9;
+        const pageCount = Math.ceil(cardLimit / cardIncrease);
+        let currentPage = 1;
 
-    const products = [
-        { name: "Fone Bluetooth", price: 199.90 },
-        { name: "Teclado Mecânico", price: 349.90 },
-        { name: "Mouse Gamer", price: 159.90 },
-        { name: "Smartwatch", price: 499.90 },
-        { name: "Cadeira Gamer", price: 999.90 },
-        { name: "Monitor 27''", price: 1299.90 },
-        { name: "HD Externo 1TB", price: 399.90 },
-        { name: "Placa de Vídeo RTX", price: 2999.90 },
-    ];
+        // Carrinho de compras
+        let cart = [];
 
-    // Variáveis para controlar o carregamento
-    let loadingProducts = false;
-    let loadedProductsCount = 0;
-    const maxProductsToLoad = 30;
-    const productsPerLoad = 6;
-
-    function loadProducts() {
-        if (loadingProducts || loadedProductsCount >= maxProductsToLoad) return;
+        // Produtos (nomes e categorias para gerar produtos aleatórios)
+        const productNames = [
+            "Smartphone", "Notebook", "Fone de Ouvido", "Tablet", "Smartwatch",
+            "Teclado Mecânico", "Mouse Gamer", "Monitor", "Câmera", "Console",
+            "Impressora", "SSD", "Memória RAM", "Placa de Vídeo", "Processador",
+            "Headset", "Caixa de Som", "Webcam", "Microfone", "Roteador"
+        ];
         
-        loadingProducts = true;
-        
-        const productsToLoad = Math.min(productsPerLoad, maxProductsToLoad - loadedProductsCount);
-        
-        for (let i = 0; i < productsToLoad; i++) {
-            const random = products[Math.floor(Math.random() * products.length)];
+        const productCategories = [
+            "Eletrônicos", "Informática", "Áudio", "Games", "Acessórios"
+        ];
+
+        // Preços aleatórios entre R$ 20 e R$ 2000
+        const getRandomPrice = () => {
+            return (Math.random() * 2000 + 20).toFixed(2);
+        };
+
+        // Gerar URL de imagem aleatória (usando Picsum)
+        const getRandomImage = (id) => {
+            return `https://picsum.photos/300/200?random=${id}`;
+        };
+
+        // Gerar nome de produto aleatório
+        const getRandomProductName = (id) => {
+            const name = productNames[Math.floor(Math.random() * productNames.length)];
+            const category = productCategories[Math.floor(Math.random() * productCategories.length)];
+            return `${name} ${category} ${id}`;
+        };
+
+        // Throttle para scroll
+        var throttleTimer;
+        const throttle = (callback, time) => {
+            if (throttleTimer) return;
+
+            throttleTimer = true;
+
+            setTimeout(() => {
+                callback();
+                throttleTimer = false;
+            }, time);
+        };
+
+        // Criar card de produto
+        const createCard = (index) => {
             const card = document.createElement("div");
-            card.className = "product-card";
-            card.innerHTML = `
-                <img src="https://picsum.photos/300?random=${Math.floor(Math.random()*1000)}" alt="${random.name}">
-                <h3>${random.name}</h3>
-                <p>R$ ${random.price.toFixed(2).replace(".", ",")}</p>
-                <button class="add-to-cart">Adicionar ao Carrinho</button>
-            `;
-            storeFeed.appendChild(card);
-        }
-        
-        loadedProductsCount += productsToLoad;
-        loadingProducts = false;
-        
-        if (loadedProductsCount >= maxProductsToLoad) {
-            const endMessage = document.createElement("div");
-            endMessage.className = "end-of-products";
-            endMessage.innerHTML = "<p>Todos os produtos foram carregados!</p>";
-            storeFeed.appendChild(endMessage);
-        }
-    }
-
-    // Sistema de carrinho
-    const cartBtn = document.getElementById("cartBtn");
-    const cartSidebar = document.getElementById("cartSidebar");
-    const closeCart = document.getElementById("closeCart");
-    const clearCart = document.getElementById("clearCart");
-    const cartItems = document.getElementById("cartItems");
-    const cartCount = document.getElementById("cartCount");
-    const cartTotal = document.getElementById("cartTotal");
-
-    const STORAGE_KEY = "asmr_cart_v1";
-    let cart = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-
-    function saveCart() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
-    }
-
-    function renderCart() {
-        if (!cartItems || !cartTotal || !cartCount) return;
-        
-        cartItems.innerHTML = "";
-        let total = 0;
-        
-        cart.forEach((item, index) => {
-            total += item.price;
-            const li = document.createElement("li");
-            li.innerHTML = `
-                <span>${item.name} - R$ ${item.price.toFixed(2).replace(".", ",")}</span>
-                <button class="remove-from-cart" data-index="${index}">X</button>
-            `;
-            cartItems.appendChild(li);
-        });
-        
-        cartTotal.textContent = "Total: R$ " + total.toFixed(2).replace(".", ",");
-        cartCount.textContent = cart.length;
-    }
-
-    // Event listeners para o carrinho
-    document.addEventListener("click", (e) => {
-        if (e.target.classList.contains("add-to-cart")) {
-            const card = e.target.closest(".product-card");
-            if (card) {
-                const name = card.querySelector("h3").textContent;
-                const priceText = card.querySelector("p").textContent;
-                const price = parseFloat(priceText.replace("R$", "").replace(",", ".").trim());
-                
-                cart.push({ name, price });
-                saveCart();
-                renderCart();
-            }
-        }
-        
-        if (e.target.classList.contains("remove-from-cart")) {
-            const index = parseInt(e.target.dataset.index);
-            cart.splice(index, 1);
-            saveCart();
-            renderCart();
-        }
-    });
-
-    if (cartBtn && cartSidebar) {
-        cartBtn.addEventListener("click", () => {
-            cartSidebar.classList.add("open");
-        });
-    }
-
-    if (closeCart && cartSidebar) {
-        closeCart.addEventListener("click", () => {
-            cartSidebar.classList.remove("open");
-        });
-    }
-
-    if (clearCart) {
-        clearCart.addEventListener("click", () => {
-            cart = [];
-            saveCart();
-            renderCart();
-        });
-    }
-
-    // Scroll infinito
-    let scrollTimeout;
-    window.addEventListener("scroll", () => {
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => {
-            const scrollPosition = window.innerHeight + window.scrollY;
-            const documentHeight = document.documentElement.scrollHeight;
+            card.className = "card";
             
-            if (scrollPosition >= documentHeight - 200 && !loadingProducts && loadedProductsCount < maxProductsToLoad) {
-                loadProducts();
+            const productName = getRandomProductName(index);
+            const productPrice = getRandomPrice();
+            const productImage = getRandomImage(index);
+            
+            card.innerHTML = `
+                <img src="${productImage}" alt="${productName}" class="card-image">
+                <div class="card-content">
+                    <h3 class="card-title">${productName}</h3>
+                    <div class="card-price">R$ ${productPrice.replace('.', ',')}</div>
+                    <button class="add-to-cart" data-id="${index}" data-name="${productName}" data-price="${productPrice}" data-image="${productImage}">
+                        Adicionar ao Carrinho
+                    </button>
+                </div>
+            `;
+            
+            cardContainer.appendChild(card);
+            
+            // Adicionar evento de clique ao botão
+            const addButton = card.querySelector('.add-to-cart');
+            addButton.addEventListener('click', addToCart);
+        };
+
+        // Adicionar produtos ao container
+        const addCards = (pageIndex) => {
+            currentPage = pageIndex;
+
+            const startRange = (pageIndex - 1) * cardIncrease;
+            const endRange = currentPage == pageCount ? cardLimit : pageIndex * cardIncrease;
+
+            cardCountElem.innerHTML = endRange;
+
+            for (let i = startRange + 1; i <= endRange; i++) {
+                createCard(i);
             }
-        }, 100);
-    });
+        };
 
-    // Inicialização
-    loadProducts();
-    renderCart();
-}
+        // Manipular scroll infinito
+        const handleInfiniteScroll = () => {
+            throttle(() => {
+                const endOfPage = window.innerHeight + window.pageYOffset >= document.body.offsetHeight - 100;
 
-// Inicializar quando o DOM estiver pronto
-document.addEventListener("DOMContentLoaded", initStore);
+                if (endOfPage) {
+                    addCards(currentPage + 1);
+                }
 
+                if (currentPage === pageCount) {
+                    removeInfiniteScroll();
+                }
+            }, 500);
+        };
 
+        // Remover scroll infinito quando chegar ao final
+        const removeInfiniteScroll = () => {
+            loader.remove();
+            window.removeEventListener("scroll", handleInfiniteScroll);
+        };
 
+        // Funções do carrinho
+        const addToCart = (e) => {
+            const button = e.target;
+            const id = button.getAttribute('data-id');
+            const name = button.getAttribute('data-name');
+            const price = parseFloat(button.getAttribute('data-price'));
+            const image = button.getAttribute('data-image');
+            
+            // Verificar se o produto já está no carrinho
+            const existingItem = cart.find(item => item.id === id);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({
+                    id,
+                    name,
+                    price,
+                    image,
+                    quantity: 1
+                });
+            }
+            
+            updateCart();
+            
+            // Feedback visual
+            button.textContent = "✔️ Adicionado";
+            setTimeout(() => {
+                button.textContent = "Adicionar ao Carrinho";
+            }, 1500);
+        };
 
+        const removeFromCart = (id) => {
+            cart = cart.filter(item => item.id !== id);
+            updateCart();
+        };
+
+        const updateCart = () => {
+            // Atualizar contador do carrinho
+            const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
+            cartCount.textContent = totalItems;
+            
+            // Atualizar itens do carrinho
+            cartItems.innerHTML = '';
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p style="padding: 1rem; text-align: center;">Seu carrinho está vazio</p>';
+                cartTotalPrice.textContent = 'R$ 0,00';
+                return;
+            }
+            
+            let totalPrice = 0;
+            
+            cart.forEach(item => {
+                const itemTotal = item.price * item.quantity;
+                totalPrice += itemTotal;
+                
+                const cartItem = document.createElement('div');
+                cartItem.className = 'cart-item';
+                cartItem.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}" class="cart-item-image">
+                    <div class="cart-item-details">
+                        <div class="cart-item-title">${item.name}</div>
+                        <div class="cart-item-price">R$ ${item.price.toFixed(2).replace('.', ',')} x ${item.quantity}</div>
+                    </div>
+                    <button class="cart-item-remove" data-id="${item.id}">🗑️</button>
+                `;
+                
+                cartItems.appendChild(cartItem);
+                
+                // Adicionar evento de remoção
+                const removeButton = cartItem.querySelector('.cart-item-remove');
+                removeButton.addEventListener('click', () => removeFromCart(item.id));
+            });
+            
+            // Atualizar preço total
+            cartTotalPrice.textContent = `R$ ${totalPrice.toFixed(2).replace('.', ',')}`;
+        };
+
+        // Abrir e fechar carrinho
+        cartButton.addEventListener('click', () => {
+            cartModal.style.display = 'flex';
+            overlay.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        });
+
+        closeCart.addEventListener('click', closeCartModal);
+        overlay.addEventListener('click', closeCartModal);
+
+        function closeCartModal() {
+            cartModal.style.display = 'none';
+            overlay.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Inicializar
+        window.onload = function () {
+            cardTotalElem.innerHTML = cardLimit;
+            addCards(currentPage);
+        };
+
+        window.addEventListener("scroll", handleInfiniteScroll);
 
 
