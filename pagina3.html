@@ -79,32 +79,39 @@
                     <i class='bx bx-cloud-download'></i>
                     <span>Download CSV</span>
                 </a>
-            </div>
-            <!-- LOJA - Esta é a parte importante -->
-            <div class="store-content">
-                <button id="cartBtn" class="cart-btn">
-                    Carrinho (<span id="cartCount">0</span>)
-                </button>
-                
-                <div id="storeFeed" class="store-feed"></div>
-            </div>
-        </main>
+        
+        <button id="cart-button">
+            </div>🛒 Carrinho <span id="cart-count">0</span>
+        </button>
+    <main>
+        <div id="card-container"></div>
+        <div id="loader">
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+            <div class="skeleton-card"></div>
+        </div>
+        <div class="card-actions">
+            <span>Mostrando 
+                <span id="card-count">0</span> de 
+                <span id="card-total">99</span> produtos      
+            </span>
+        </div>
+    </main>
 
-        <!-- Carrinho Sidebar -->
-        <aside id="cartSidebar" class="cart-sidebar">
-            <div class="cart-header">
-                <h2>Meu Carrinho</h2>
-                <button id="closeCart" class="close-btn">X</button>
-            </div>
-            <ul id="cartItems" class="cart-items"></ul>
-            <p id="cartTotal" class="cart-total">Total: R$ 0,00</p>
-            <button id="clearCart" class="clear-btn">Esvaziar Carrinho</button>
-        </aside>
+    <div class="overlay" id="overlay"></div>
+    
+    <div class="cart-modal" id="cart-modal">
+        <div class="cart-header">
+            <h2>Seu Carrinho</h2>
+            <button class="close-cart">&times;</button>
+        </div>
+        <div class="cart-items" id="cart-items"></div>
+        <div class="cart-total">
+            <span>Total:</span>
+            <span id="cart-total-price">R$ 0,00</span>
+        </div>
+        <button class="checkout-btn">Finalizar Compra</button>
     </div>
-
-
-
-
   <script> src="pagina3.js"></script>
 </body>
 </html>
