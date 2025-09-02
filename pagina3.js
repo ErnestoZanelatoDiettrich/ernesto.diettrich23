@@ -177,6 +177,8 @@ document.addEventListener('DOMContentLoaded', () => {
     render();
     console.log();
   });
+// ... código anterior mantido ...
+
 document.addEventListener("DOMContentLoaded", () => {
     const storeFeed = document.getElementById("storeFeed"); 
     if (!storeFeed) return;
@@ -192,8 +194,21 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "Placa de Vídeo RTX", price: 2999.90 },
     ];
 
-    function loadProducts(count = 6) {
-        for (let i = 0; i < count; i++) {
+    // Variáveis para controlar o carregamento
+    let loadingProducts = false;
+    let loadedProductsCount = 0;
+    const maxProductsToLoad = 30; // Limite máximo de produtos
+    const productsPerLoad = 6;
+
+    function loadProducts() {
+        if (loadingProducts || loadedProductsCount >= maxProductsToLoad) return;
+        
+        loadingProducts = true;
+        
+        // Carrega apenas os produtos que ainda não foram carregados
+        const productsToLoad = Math.min(productsPerLoad, maxProductsToLoad - loadedProductsCount);
+        
+        for (let i = 0; i < productsToLoad; i++) {
             const random = products[Math.floor(Math.random() * products.length)];
             const card = document.createElement("div");
             card.className = "product-card";
@@ -205,16 +220,41 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
             storeFeed.appendChild(card);
         }
+        
+        loadedProductsCount += productsToLoad;
+        loadingProducts = false;
+        
+        // Esconde o botão ou mostra mensagem se atingiu o limite
+        if (loadedProductsCount >= maxProductsToLoad) {
+            const endMessage = document.createElement("div");
+            endMessage.className = "end-of-products";
+            endMessage.innerHTML = "<p>Todos os produtos foram carregados!</p>";
+            storeFeed.appendChild(endMessage);
+        }
     }
 
-    let loadingProducts = false;
+    // Debounce para evitar múltiplas chamadas durante o scroll
+    let scrollTimeout;
     window.addEventListener("scroll", () => {
-        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100 && !loadingProducts) {
-            loadingProducts = true;
-            loadProducts(6);
-            loadingProducts = false;
-        }
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            const scrollPosition = window.innerHeight + window.scrollY;
+            const documentHeight = document.body.offsetHeight;
+            
+            // Carrega mais produtos quando estiver a 100px do final
+            if (scrollPosition >= documentHeight - 100 && !loadingProducts && loadedProductsCount < maxProductsToLoad) {
+                loadProducts();
+            }
+        }, 100);
     });
+
+    // Carrega os primeiros produtos
+    loadProducts();
+
+    // ... resto do código do carrinho mantido ...
+});
+
+// ... resto do código mantido ...
     loadProducts(9);
     const cartBtn = document.getElementById("cartBtn");
     const cartSidebar = document.getElementById("cartSidebar");
@@ -278,6 +318,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     renderCart();
 });
+
 
 
 
