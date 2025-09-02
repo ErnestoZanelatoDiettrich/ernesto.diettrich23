@@ -173,120 +173,231 @@ document.addEventListener('DOMContentLoaded', () => {
   
     render();
   });
-document.addEventListener("DOMContentLoaded", () => {
-    const addFriendBtn = document.getElementById("addFriendBtn");
-    const friendName = document.getElementById("friendName");
-    const friendImg = document.getElementById("friendImg");
-    const friendStatus = document.getElementById("friendStatus");
-    const friendsTable = document.querySelector("#friendsTable tbody");
-
-    addFriendBtn.addEventListener("click", () => {
-        const name = friendName.value.trim();
-        const img = friendImg.value.trim() 
-        const status = friendStatus.value;
-
-        if (!name) return;
-
-        if ([...friendsTable.querySelectorAll("td p")].some(p => p.textContent === name)) {
-            alert("Amigo já adicionado!");
-            return;
-        }
-
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td><img src="${img}"><p>${name}</p></td>
-            <td>Agora</td>
-            <td><span class="status ${status === "Online" ? "completed" : "process"}">${status}</span></td>
-        `;
-        friendsTable.appendChild(row);
-
-        friendName.value = "";
-        friendImg.value = "";
-    });
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-    const addFriendBtn = document.getElementById("addFriendBtn");
-    const friendName = document.getElementById("friendName");
-    const friendStatus = document.getElementById("friendStatus");
-    const friendsTable = document.getElementById("friendsTable");
-    const chatPopup = document.getElementById("chatPopup");
-    const chatFriendName = document.getElementById("chatFriendName");
-    const chatMessages = document.getElementById("chatMessages");
-    const chatInput = document.getElementById("chatInput");
-    const sendChat = document.getElementById("sendChat");
-    const closeChat = document.getElementById("closeChat");
+/ Sistema de gerenciamento de amigos e chat
+document.addEventListener('DOMContentLoaded', () => {
+    // Elementos do DOM
+    const addFriendBtn = document.getElementById('addFriendBtn');
+    const friendNameInput = document.getElementById('friendName');
+    const friendImgInput = document.getElementById('friendImg');
+    const friendStatusSelect = document.getElementById('friendStatus');
+    const friendsTable = document.querySelector('#friendsTable tbody');
+    const chatPopup = document.getElementById('chatPopup');
+    const chatFriendName = document.getElementById('chatFriendName');
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const sendChatBtn = document.getElementById('sendChat');
+    const closeChatBtn = document.getElementById('closeChat');
+    
+    // Estado da aplicação
     let currentFriend = null;
-    let chats = {}; // Armazena mensagens de cada amigo separado
-    function createFriendRow(name, status) {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td>
-                <img src="https://ppgquimica.propg.ufabc.edu.br/wp-content/uploads/2016/05/sem-imagem-avatar.png">
-                <p>${name}</p>
-            </td>
-            <td>Agora</td>
-            <td><span class="status ${status === "Online" ? "completed" : "process"}">${status}</span></td>
-            <td><button class="remove-btn">Remover</button></td>
-        `;
-        row.querySelector("td").addEventListener("click", () => openChat(name));
-        row.querySelector(".remove-btn").addEventListener("click", (e) => {
-            e.stopPropagation();
-            row.remove();
-            delete chats[name]; // remove o histórico do amigo
-            if (currentFriend === name) closeChatPopup();
-        });
-        return row;
-    }
-    addFriendBtn.addEventListener("click", () => {
-        const name = friendName.value.trim();
-        const status = friendStatus.value;
-        if (!name) return;
-        if (document.querySelector(`#friendsTable p:contains('${name}')`)) {
-            alert("Esse amigo já foi adicionado!");
+    let chats = JSON.parse(localStorage.getItem('friend_chats')) || {};
+    let friends = JSON.parse(localStorage.getItem('friends_list')) || [];
+    
+    // Inicialização
+    renderFriendsList();
+    
+    // Event Listeners
+    addFriendBtn.addEventListener('click', addNewFriend);
+    closeChatBtn.addEventListener('click', closeChat);
+    sendChatBtn.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+    
+    // Funções
+    function addNewFriend() {
+        const name = friendNameInput.value.trim();
+        const img = friendImgInput.value.trim() || 'https://ppgquimica.propg.ufabc.edu.br/wp-content/uploads/2016/05/sem-imagem-avatar.png';
+        const status = friendStatusSelect.value;
+        
+        if (!name) {
+            alert('Por favor, insira um nome para o amigo.');
             return;
         }
-        const row = createFriendRow(name, status);
-        friendsTable.appendChild(row);
-        chats[name] = []; // inicia histórico do amigo
-        friendName.value = "";
-    });
-    function openChat(name) {
-        currentFriend = name;
-        chatFriendName.textContent = name;
-        renderChat(name);
-        chatPopup.style.display = "flex";
+        
+        // Verificar se o amigo já existe
+        if (friends.some(friend => friend.name === name)) {
+            alert('Este amigo já foi adicionado!');
+            return;
+        }
+        
+        // Adicionar amigo à lista
+        const newFriend = {
+            id: Date.now(),
+            name,
+            img,
+            status,
+            lastOnline: 'Agora'
+        };
+        
+        friends.push(newFriend);
+        saveFriends();
+        renderFriendsList();
+        
+        // Inicializar chat se não existir
+        if (!chats[name]) {
+            chats[name] = [];
+            saveChats();
+        }
+        
+        // Limpar formulário
+        friendNameInput.value = '';
+        friendImgInput.value = '';
     }
-    function closeChatPopup() {
-        chatPopup.style.display = "none";
-        currentFriend = null;
-    }
-    closeChat.addEventListener("click", closeChatPopup);
-    function renderChat(friend) {
-        chatMessages.innerHTML = "";
-        (chats[friend] || []).forEach(msg => {
-            const p = document.createElement("p");
-            p.classList.add(msg.sender);
-            p.textContent = `${msg.sender === "me" ? "Você" : friend}: ${msg.text}`;
-            chatMessages.appendChild(p);
+    
+    function renderFriendsList() {
+        friendsTable.innerHTML = '';
+        
+        friends.forEach(friend => {
+            const row = document.createElement('tr');
+            row.dataset.friendId = friend.id;
+            
+            row.innerHTML = `
+                <td>
+                    <img src="${friend.img}" alt="${friend.name}">
+                    <p>${friend.name}</p>
+                </td>
+                <td>${friend.lastOnline}</td>
+                <td><span class="status ${friend.status === 'Online' ? 'completed' : 'process'}">${friend.status}</span></td>
+                <td>
+                    <button class="chat-btn" data-friend="${friend.name}"><i class='bx bx-message'></i></button>
+                    <button class="remove-btn" data-friend-id="${friend.id}"><i class='bx bx-trash'></i></button>
+                </td>
+            `;
+            
+            friendsTable.appendChild(row);
         });
+        
+        // Adicionar event listeners aos botões
+        document.querySelectorAll('.chat-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const friendName = e.currentTarget.dataset.friend;
+                openChat(friendName);
+            });
+        });
+        
+        document.querySelectorAll('.remove-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const friendId = parseInt(e.currentTarget.dataset.friendId);
+                removeFriend(friendId);
+            });
+        });
+    }
+    
+    function removeFriend(friendId) {
+        if (confirm('Tem certeza que deseja remover este amigo?')) {
+            // Encontrar o amigo para obter o nome (para remover o chat também)
+            const friendToRemove = friends.find(f => f.id === friendId);
+            
+            // Remover da lista de amigos
+            friends = friends.filter(friend => friend.id !== friendId);
+            saveFriends();
+            
+            // Remover o chat se existir
+            if (friendToRemove && chats[friendToRemove.name]) {
+                delete chats[friendToRemove.name];
+                saveChats();
+            }
+            
+            // Fechar o chat se estiver aberto com este amigo
+            if (currentFriend === friendToRemove.name) {
+                closeChat();
+            }
+            
+            renderFriendsList();
+        }
+    }
+    
+    function openChat(friendName) {
+        currentFriend = friendName;
+        chatFriendName.textContent = friendName;
+        renderChat();
+        chatPopup.style.display = 'flex';
+        chatInput.focus();
+    }
+    
+    function closeChat() {
+        chatPopup.style.display = 'none';
+        currentFriend = null;
+        chatInput.value = '';
+    }
+    
+    function renderChat() {
+        if (!currentFriend) return;
+        
+        chatMessages.innerHTML = '';
+        const messages = chats[currentFriend] || [];
+        
+        messages.forEach(msg => {
+            const messageEl = document.createElement('div');
+            messageEl.classList.add('message', msg.sender);
+            messageEl.innerHTML = `
+                <div class="message-content">${msg.text}</div>
+                <div class="message-time">${msg.time}</div>
+            `;
+            chatMessages.appendChild(messageEl);
+        });
+        
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
-    sendChat.addEventListener("click", () => {
-        const msg = chatInput.value.trim();
-        if (!msg || !currentFriend) return;
-        chats[currentFriend].push({ sender: "me", text: msg });
-        renderChat(currentFriend);
-        chatInput.value = "";
+    
+    function sendMessage() {
+        if (!currentFriend || !chatInput.value.trim()) return;
+        
+        const message = {
+            text: chatInput.value.trim(),
+            sender: 'me',
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        
+        // Adicionar mensagem ao histórico
+        if (!chats[currentFriend]) {
+            chats[currentFriend] = [];
+        }
+        
+        chats[currentFriend].push(message);
+        saveChats();
+        renderChat();
+        
+        // Simular resposta após um breve delay
         setTimeout(() => {
-            chats[currentFriend].push({ sender: "friend", text: "kkk boa!" });
-            renderChat(currentFriend);
+            const response = {
+                text: getRandomResponse(),
+                sender: 'friend',
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+            
+            chats[currentFriend].push(response);
+            saveChats();
+            renderChat();
         }, 1000);
-    });
+        
+        chatInput.value = '';
+    }
+    
+    function getRandomResponse() {
+        const responses = [
+            "Oi! Como você está?",
+            "kkk boa!",
+            "Concordo com você!",
+            "Estou ocupado no momento, depois falamos.",
+            "Que interessante!",
+            "Precisamos marcar de sair!",
+            "Você viu o último episódio?",
+            "Obrigado por compartilhar!"
+        ];
+        
+        return responses[Math.floor(Math.random() * responses.length)];
+    }
+    
+    function saveFriends() {
+        localStorage.setItem('friends_list', JSON.stringify(friends));
+    }
+    
+    function saveChats() {
+        localStorage.setItem('friend_chats', JSON.stringify(chats));
+    }
 });
-
-
-
 
 
 
