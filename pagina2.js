@@ -173,31 +173,38 @@ document.addEventListener('DOMContentLoaded', () => {
   
     render();
   });
-const addFriendBtn = document.getElementById("addFriendBtn");
-addFriendBtn.addEventListener("click", () => {
-    let name = document.getElementById("friendName").value;
-    let img = document.getElementById("friendImg").value || "images/logo.png";
-    let status = document.getElementById("friendStatus").value;
+document.addEventListener("DOMContentLoaded", () => {
+    const addFriendBtn = document.getElementById("addFriendBtn");
+    const friendName = document.getElementById("friendName");
+    const friendImg = document.getElementById("friendImg");
+    const friendStatus = document.getElementById("friendStatus");
+    const friendsTable = document.querySelector("#friendsTable tbody");
 
-    if (name.trim() !== "") {
-        let tbody = document.querySelector(".orders tbody");
-        let row = document.createElement("tr");
+    addFriendBtn.addEventListener("click", () => {
+        const name = friendName.value.trim();
+        const img = friendImg.value.trim() 
+        const status = friendStatus.value;
 
+        if (!name) return;
+
+        if ([...friendsTable.querySelectorAll("td p")].some(p => p.textContent === name)) {
+            alert("Amigo já adicionado!");
+            return;
+        }
+
+        const row = document.createElement("tr");
         row.innerHTML = `
-            <td>
-                <img src="${img}">
-                <p>${name}</p>
-            </td>
+            <td><img src="${img}"><p>${name}</p></td>
             <td>Agora</td>
             <td><span class="status ${status === "Online" ? "completed" : "process"}">${status}</span></td>
         `;
+        friendsTable.appendChild(row);
 
-        tbody.appendChild(row);
-
-        document.getElementById("friendName").value = "";
-        document.getElementById("friendImg").value = "";
-    }
+        friendName.value = "";
+        friendImg.value = "";
+    });
 });
+
 document.addEventListener("DOMContentLoaded", () => {
     const addFriendBtn = document.getElementById("addFriendBtn");
     const friendName = document.getElementById("friendName");
@@ -277,6 +284,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 1000);
     });
 });
+
 
 
 
