@@ -657,48 +657,85 @@ body{
     color: #92400e;
 }
 
-.add-friend-container {
-    background: #fff;
-    padding: 15px;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+/* Estilos para a tabela de amigos */
+#friendsTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
 }
 
-.add-friend-container input, 
-.add-friend-container select {
-    padding: 8px;
-    border-radius: 6px;
-    border: 1px solid #d1d5db;
+#friendsTable th {
+    text-align: left;
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--grey);
+    background-color: var(--light-primary);
+    color: var(--primary);
 }
 
-.add-friend-container button {
-    background: #2563eb;
-    color: white;
+#friendsTable td {
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--grey);
+}
+
+#friendsTable tr:last-child td {
+    border-bottom: none;
+}
+
+#friendsTable tr:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* Botões de ação */
+.chat-btn, .remove-btn {
+    padding: 6px 10px;
     border: none;
-    padding: 8px;
-    border-radius: 6px;
+    border-radius: 4px;
     cursor: pointer;
+    margin: 0 3px;
+    font-size: 16px;
 }
+
+.chat-btn {
+    background-color: var(--success);
+    color: white;
+}
+
+.remove-btn {
+    background-color: var(--danger);
+    color: white;
+}
+
+.chat-btn:hover {
+    background-color: var(--light-success);
+    color: var(--success);
+}
+
+.remove-btn:hover {
+    background-color: var(--light-danger);
+    color: var(--danger);
+}
+
+/* Estilos para o chat */
 .chat-popup {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    width: 300px;
+    width: 320px;
+    height: 400px;
     background: var(--light);
     border-radius: 10px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    display: flex;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    display: none;
     flex-direction: column;
-    overflow: hidden;
-    z-index: 3000;
+    z-index: 1000;
 }
 
 .chat-header {
+    padding: 15px;
     background: var(--primary);
     color: white;
-    padding: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -706,83 +743,73 @@ body{
 
 .chat-messages {
     flex: 1;
-    padding: 10px;
+    padding: 15px;
     overflow-y: auto;
-    font-size: 14px;
+    display: flex;
+    flex-direction: column;
 }
 
-.chat-messages p {
-    margin: 5px 0;
-    padding: 6px 10px;
-    border-radius: 8px;
+.message {
     max-width: 80%;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 10px;
+    position: relative;
 }
 
-.chat-messages .me {
-    background: var(--primary);
+.message.me {
+    align-self: flex-end;
+    background-color: var(--primary);
     color: white;
-    margin-left: auto;
-    text-align: right;
 }
 
-.chat-messages .friend {
-    background: var(--grey);
+.message.friend {
+    align-self: flex-start;
+    background-color: var(--grey);
     color: var(--dark);
-    margin-right: auto;
-    text-align: left;
+}
+
+.message-time {
+    font-size: 10px;
+    margin-top: 5px;
+    opacity: 0.8;
 }
 
 .chat-input {
     display: flex;
+    padding: 10px;
     border-top: 1px solid var(--grey);
 }
 
 .chat-input input {
     flex: 1;
-    border: none;
-    padding: 8px;
+    padding: 10px;
+    border: 1px solid var(--grey);
+    border-radius: 20px;
     outline: none;
 }
 
 .chat-input button {
+    margin-left: 10px;
+    padding: 10px 15px;
     background: var(--primary);
     color: white;
     border: none;
-    padding: 8px 12px;
+    border-radius: 20px;
     cursor: pointer;
 }
 
-button {
-    font-size: 14px;
-    padding: 6px 14px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s ease-in-out;
+/* Responsividade */
+@media screen and (max-width: 768px) {
+    .chat-popup {
+        width: 100%;
+        height: 100%;
+        bottom: 0;
+        right: 0;
+        border-radius: 0;
+    }
+    
+    .add-friend-container {
+        flex-direction: column;
+    }
 }
-
-#addFriendBtn {
-    background: var(--primary);
-    color: white;
-}
-
-#addFriendBtn:hover {
-    background: #0056b3; /* tom mais escuro */
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-}
-
-.remove-btn {
-    background: #ff4d4d;
-    color: white;
-}
-
-.remove-btn:hover {
-    background: #cc0000;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-}
-
-
-
