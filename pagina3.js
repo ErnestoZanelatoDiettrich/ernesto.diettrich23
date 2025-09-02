@@ -240,22 +240,12 @@ document.addEventListener("DOMContentLoaded", () => {
         scrollTimeout = setTimeout(() => {
             const scrollPosition = window.innerHeight + window.scrollY;
             const documentHeight = document.body.offsetHeight;
-            
-            // Carrega mais produtos quando estiver a 100px do final
             if (scrollPosition >= documentHeight - 100 && !loadingProducts && loadedProductsCount < maxProductsToLoad) {
                 loadProducts();
             }
         }, 100);
     });
-
-    // Carrega os primeiros produtos
     loadProducts();
-
-    // ... resto do código do carrinho mantido ...
-});
-
-// ... resto do código mantido ...
-    loadProducts(9);
     const cartBtn = document.getElementById("cartBtn");
     const cartSidebar = document.getElementById("cartSidebar");
     const closeCart = document.getElementById("closeCart");
@@ -318,6 +308,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     renderCart();
 });
+
+
+   
 
 
 
