@@ -801,4 +801,18 @@ body{
   border-radius: 6px;
   cursor: pointer;
 }
+.end-of-products {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+    grid-column: 1 / -1;
+}
+
+.product-card {
+    transition: transform 0.2s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
 
