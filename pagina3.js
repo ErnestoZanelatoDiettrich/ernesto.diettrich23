@@ -61,7 +61,6 @@ if (toggler) {
         }
     });
 }
- // Elementos do DOM
         const cardContainer = document.getElementById("card-container");
         const cardCountElem = document.getElementById("card-count");
         const cardTotalElem = document.getElementById("card-total");
@@ -73,46 +72,31 @@ if (toggler) {
         const cartItems = document.getElementById("cart-items");
         const cartCount = document.getElementById("cart-count");
         const cartTotalPrice = document.getElementById("cart-total-price");
-
-        // Configurações de paginação
         const cardLimit = 99;
         const cardIncrease = 9;
         const pageCount = Math.ceil(cardLimit / cardIncrease);
         let currentPage = 1;
-
-        // Carrinho de compras
         let cart = [];
-
-        // Produtos (nomes e categorias para gerar produtos aleatórios)
         const productNames = [
             "Smartphone", "Notebook", "Fone de Ouvido", "Tablet", "Smartwatch",
             "Teclado Mecânico", "Mouse Gamer", "Monitor", "Câmera", "Console",
             "Impressora", "SSD", "Memória RAM", "Placa de Vídeo", "Processador",
             "Headset", "Caixa de Som", "Webcam", "Microfone", "Roteador"
         ];
-        
         const productCategories = [
             "Eletrônicos", "Informática", "Áudio", "Games", "Acessórios"
         ];
-
-        // Preços aleatórios entre R$ 20 e R$ 2000
         const getRandomPrice = () => {
             return (Math.random() * 2000 + 20).toFixed(2);
         };
-
-        // Gerar URL de imagem aleatória (usando Picsum)
         const getRandomImage = (id) => {
             return `https://picsum.photos/300/200?random=${id}`;
         };
-
-        // Gerar nome de produto aleatório
         const getRandomProductName = (id) => {
             const name = productNames[Math.floor(Math.random() * productNames.length)];
             const category = productCategories[Math.floor(Math.random() * productCategories.length)];
             return `${name} ${category} ${id}`;
         };
-
-        // Throttle para scroll
         var throttleTimer;
         const throttle = (callback, time) => {
             if (throttleTimer) return;
@@ -124,16 +108,12 @@ if (toggler) {
                 throttleTimer = false;
             }, time);
         };
-
-        // Criar card de produto
         const createCard = (index) => {
             const card = document.createElement("div");
             card.className = "card";
-            
             const productName = getRandomProductName(index);
             const productPrice = getRandomPrice();
             const productImage = getRandomImage(index);
-            
             card.innerHTML = `
                 <img src="${productImage}" alt="${productName}" class="card-image">
                 <div class="card-content">
@@ -145,14 +125,10 @@ if (toggler) {
                 </div>
             `;
             
-            cardContainer.appendChild(card);
-            
-            // Adicionar evento de clique ao botão
+            cardContainer.appendChild(card);           
             const addButton = card.querySelector('.add-to-cart');
             addButton.addEventListener('click', addToCart);
         };
-
-        // Adicionar produtos ao container
         const addCards = (pageIndex) => {
             currentPage = pageIndex;
 
@@ -165,8 +141,6 @@ if (toggler) {
                 createCard(i);
             }
         };
-
-        // Manipular scroll infinito
         const handleInfiniteScroll = () => {
             throttle(() => {
                 const endOfPage = window.innerHeight + window.pageYOffset >= document.body.offsetHeight - 100;
@@ -180,24 +154,17 @@ if (toggler) {
                 }
             }, 500);
         };
-
-        // Remover scroll infinito quando chegar ao final
         const removeInfiniteScroll = () => {
             loader.remove();
             window.removeEventListener("scroll", handleInfiniteScroll);
         };
-
-        // Funções do carrinho
         const addToCart = (e) => {
             const button = e.target;
             const id = button.getAttribute('data-id');
             const name = button.getAttribute('data-name');
             const price = parseFloat(button.getAttribute('data-price'));
             const image = button.getAttribute('data-image');
-            
-            // Verificar se o produto já está no carrinho
-            const existingItem = cart.find(item => item.id === id);
-            
+            const existingItem = cart.find(item => item.id === id); 
             if (existingItem) {
                 existingItem.quantity += 1;
             } else {
@@ -209,37 +176,26 @@ if (toggler) {
                     quantity: 1
                 });
             }
-            
             updateCart();
-            
-            // Feedback visual
-            button.textContent = "✔️ Adicionado";
+            button.textContent = "Adicionado";
             setTimeout(() => {
                 button.textContent = "Adicionar ao Carrinho";
             }, 1500);
         };
-
         const removeFromCart = (id) => {
             cart = cart.filter(item => item.id !== id);
             updateCart();
         };
-
         const updateCart = () => {
-            // Atualizar contador do carrinho
             const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
             cartCount.textContent = totalItems;
-            
-            // Atualizar itens do carrinho
             cartItems.innerHTML = '';
-            
             if (cart.length === 0) {
                 cartItems.innerHTML = '<p style="padding: 1rem; text-align: center;">Seu carrinho está vazio</p>';
                 cartTotalPrice.textContent = 'R$ 0,00';
                 return;
             }
-            
             let totalPrice = 0;
-            
             cart.forEach(item => {
                 const itemTotal = item.price * item.quantity;
                 totalPrice += itemTotal;
@@ -254,25 +210,17 @@ if (toggler) {
                     </div>
                     <button class="cart-item-remove" data-id="${item.id}">🗑️</button>
                 `;
-                
                 cartItems.appendChild(cartItem);
-                
-                // Adicionar evento de remoção
                 const removeButton = cartItem.querySelector('.cart-item-remove');
                 removeButton.addEventListener('click', () => removeFromCart(item.id));
-            });
-            
-            // Atualizar preço total
+            });   
             cartTotalPrice.textContent = `R$ ${totalPrice.toFixed(2).replace('.', ',')}`;
         };
-
-        // Abrir e fechar carrinho
         cartButton.addEventListener('click', () => {
             cartModal.style.display = 'flex';
             overlay.style.display = 'block';
             document.body.style.overflow = 'hidden';
         });
-
         closeCart.addEventListener('click', closeCartModal);
         overlay.addEventListener('click', closeCartModal);
 
@@ -281,13 +229,12 @@ if (toggler) {
             overlay.style.display = 'none';
             document.body.style.overflow = 'auto';
         }
-
-        // Inicializar
         window.onload = function () {
             cardTotalElem.innerHTML = cardLimit;
             addCards(currentPage);
         };
 
         window.addEventListener("scroll", handleInfiniteScroll);
+
 
 
