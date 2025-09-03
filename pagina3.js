@@ -235,6 +235,7 @@ if (toggler) {
         };
 
         window.addEventListener("scroll", handleInfiniteScroll);
+};
 
 
 
